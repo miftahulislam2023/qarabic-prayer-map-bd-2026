@@ -11,6 +11,9 @@ const hindSiliguri = Hind_Siliguri({
 export const metadata = {
   title: "Bangladesh Prayer Times Map",
   description: "Bangladesh Prayer Times of 64 Districts - ৬৪ জেলার নামাজের সময়সূচি",
+  other: {
+    'apple-mobile-web-app-title': 'Prayer Map BD',
+  },
 };
 
 export default function RootLayout({ children }) {
