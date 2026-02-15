@@ -6,29 +6,42 @@ export async function getPrayerTimes(lat, lng) {
         const month = today.getMonth() + 1;
         const year = today.getFullYear();
 
-        const url = `https://api.aladhan.com/v1/timings/${day}-${month}-${year}?latitude=${lat}&longitude=${lng}&method=1`;
+        // Fetch Standard Asr (Shafi) - school=0
+        const urlStandard = `https://api.aladhan.com/v1/timings/${day}-${month}-${year}?latitude=${lat}&longitude=${lng}&method=1&school=0`;
+        // Fetch Hanafi Asr - school=1
+        const urlHanafi = `https://api.aladhan.com/v1/timings/${day}-${month}-${year}?latitude=${lat}&longitude=${lng}&method=1&school=1`;
 
-        const response = await fetch(url);
-        const data = await response.json();
+        const [responseStandard, responseHanafi] = await Promise.all([
+            fetch(urlStandard),
+            fetch(urlHanafi)
+        ]);
 
-        if (data.code === 200 && data.data) {
-            const timings = data.data.timings;
+        const dataStandard = await responseStandard.json();
+        const dataHanafi = await responseHanafi.json();
+
+        if (dataStandard.code === 200 && dataStandard.data && dataHanafi.code === 200 && dataHanafi.data) {
+            const timingsStandard = dataStandard.data.timings;
+            const timingsHanafi = dataHanafi.data.timings;
+
+            // Add 1 minute to Maghrib time
+            const maghribAdjusted = addMinutes(timingsStandard.Maghrib, 1);
 
             // Return prayer times
             return {
-                fajr: timings.Fajr,
-                dhuhr: timings.Dhuhr,
-                asr: timings.Asr,
-                maghrib: timings.Maghrib,
-                isha: timings.Isha,
-                sunrise: timings.Sunrise,
-                sunset: timings.Sunset,
+                fajr: timingsStandard.Fajr,
+                dhuhr: timingsStandard.Dhuhr,
+                asrStandard: timingsStandard.Asr,
+                asrHanafi: timingsHanafi.Asr,
+                maghrib: maghribAdjusted,
+                isha: timingsStandard.Isha,
+                sunrise: timingsStandard.Sunrise,
+                sunset: timingsStandard.Sunset,
                 // Suhur is typically 10-15 minutes before Fajr
-                suhur: calculateSuhur(timings.Fajr),
-                // Iftar is at Maghrib time
-                iftar: timings.Maghrib,
-                date: data.data.date.readable,
-                hijri: data.data.date.hijri.date
+                suhur: calculateSuhur(timingsStandard.Fajr),
+                // Iftar is at adjusted Maghrib time
+                iftar: maghribAdjusted,
+                date: dataStandard.data.date.readable,
+                hijri: dataStandard.data.date.hijri.date
             };
         }
 
@@ -52,6 +65,21 @@ function calculateSuhur(fajrTime) {
     }
 
     return `${String(suhurHours).padStart(2, '0')}:${String(suhurMinutes).padStart(2, '0')}`;
+}
+
+// Add minutes to a time string
+function addMinutes(timeString, minutesToAdd) {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    let newMinutes = minutes + minutesToAdd;
+    let newHours = hours;
+
+    if (newMinutes >= 60) {
+        newMinutes -= 60;
+        newHours += 1;
+        if (newHours >= 24) newHours -= 24;
+    }
+
+    return `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`;
 }
 
 // Convert 24-hour format to 12-hour format with Bengali numerals

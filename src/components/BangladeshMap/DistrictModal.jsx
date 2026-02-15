@@ -99,8 +99,13 @@ const DistrictModal = ({ data, onClose }) => {
                     icon="🌤️"
                   />
                   <PrayerTimeRow
-                    name="আসর"
-                    time={formatTime12Hour(prayerTimes.asr)}
+                    name="আসর (হানাফি)"
+                    time={formatTime12Hour(prayerTimes.asrHanafi)}
+                    icon="🌥️"
+                  />
+                  <PrayerTimeRow
+                    name="আসর (অন্যান্য)"
+                    time={formatTime12Hour(prayerTimes.asrStandard)}
                     icon="🌥️"
                   />
                   <PrayerTimeRow
