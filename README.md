@@ -19,7 +19,7 @@ A beautiful, interactive web application that displays Islamic prayer times (Suh
 
 ## 🚀 Live Demo
 
-[View Live Application](https://map.qarabic.org) *(Replace with your actual deployment URL)*
+[View Live Application](https://map.qarabic.org) *(QArabic Sub-domain)*
 
 ## 📱 Screenshots
 
