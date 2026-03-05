@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getPrayerTimes, formatTime12Hour } from "@/utils/prayerTimes";
+import NextPrayerCountdown from "./NextPrayerCountdown";
 
 const DistrictModal = ({ data, onClose }) => {
   const [prayerTimes, setPrayerTimes] = useState(null);
@@ -36,7 +37,7 @@ const DistrictModal = ({ data, onClose }) => {
             {/* close button */}
             <button
               onClick={onClose}
-              className="text-3xl font-bold leading-none hover:text-gray-200 transition-colors"
+              className="text-3xl font-bold leading-none hover:text-gray-200 transition-colors cursor-pointer"
             >
               &times;
             </button>
@@ -52,10 +53,19 @@ const DistrictModal = ({ data, onClose }) => {
           ) : prayerTimes ? (
             <>
               {/* Date Display */}
-              <div className="text-center bg-teal-50 p-3 rounded-lg">
-                <p className="text-sm text-gray-600">আজকের তারিখ</p>
-                <p className="font-semibold text-teal-900">{prayerTimes.date}</p>
-                <p className="text-xs text-gray-500 mt-1">{prayerTimes.hijri} হিজরি</p>
+              <div className="bg-teal-50 p-3 rounded-lg flex justify-between items-center">
+                <div className="w-1/2 ">
+                  <p className="text-sm text-gray-600">আজকের তারিখ</p>
+                  <p className="font-semibold text-teal-900">
+                    {prayerTimes.date}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {prayerTimes.hijri} হিজরি
+                  </p>
+                </div>
+                <div className="w-1/2 flex justify-end">
+                  <NextPrayerCountdown prayerTimes={prayerTimes} />
+                </div>
               </div>
 
               {/* Suhur and Iftar - Highlighted */}
@@ -63,14 +73,18 @@ const DistrictModal = ({ data, onClose }) => {
                 <div className="bg-linear-to-br from-orange-500 to-orange-600 text-white p-4 rounded-xl shadow-lg">
                   <div className="text-center">
                     <p className="text-sm opacity-90 mb-1">সেহরির শেষ সময়</p>
-                    <p className="text-3xl font-bold">{formatTime12Hour(prayerTimes.suhur)}</p>
+                    <p className="text-3xl font-bold">
+                      {formatTime12Hour(prayerTimes.suhur)}
+                    </p>
                     <p className="text-xs mt-1 opacity-75">ফজরের আগে</p>
                   </div>
                 </div>
                 <div className="bg-linear-to-br from-purple-500 to-purple-600 text-white p-4 rounded-xl shadow-lg">
                   <div className="text-center">
                     <p className="text-sm opacity-90 mb-1">ইফতারের সময়</p>
-                    <p className="text-3xl font-bold">{formatTime12Hour(prayerTimes.iftar)}</p>
+                    <p className="text-3xl font-bold">
+                      {formatTime12Hour(prayerTimes.iftar)}
+                    </p>
                     <p className="text-xs mt-1 opacity-75">মাগরিব</p>
                   </div>
                 </div>
@@ -126,8 +140,12 @@ const DistrictModal = ({ data, onClose }) => {
                 <h3 className="font-bold text-teal-700 mb-2">জেলা সম্পর্কে</h3>
                 <p className="text-sm text-gray-700 mb-2">{data.info}</p>
                 <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
-                  <p><strong>বিখ্যাত:</strong> {data.famous_for}</p>
-                  <p><strong>আয়তন:</strong> {data.area}</p>
+                  <p>
+                    <strong>বিখ্যাত:</strong> {data.famous_for}
+                  </p>
+                  <p>
+                    <strong>আয়তন:</strong> {data.area}
+                  </p>
                 </div>
               </div>
             </>
@@ -142,7 +160,7 @@ const DistrictModal = ({ data, onClose }) => {
         <div className="p-4 border-t bg-gray-50 text-right">
           <button
             onClick={onClose}
-            className="bg-teal-600 text-white px-6 py-2 rounded-lg hover:bg-teal-700 transition-all hover:shadow-md"
+            className="bg-teal-600 text-white px-6 py-2 rounded-lg hover:bg-teal-700 transition-all hover:shadow-md cursor-pointer"
           >
             বন্ধ করুন
           </button>
@@ -154,8 +172,11 @@ const DistrictModal = ({ data, onClose }) => {
 
 // Prayer Time Row Component
 const PrayerTimeRow = ({ name, time, icon, isSpecial = true }) => (
-  <div className={`flex justify-between items-center p-3 rounded-lg ${isSpecial ? 'bg-teal-50 border border-teal-100' : 'bg-gray-50'
-    }`}>
+  <div
+    className={`flex justify-between items-center p-3 rounded-lg ${
+      isSpecial ? "bg-teal-50 border border-teal-100" : "bg-gray-50"
+    }`}
+  >
     <div className="flex items-center gap-2">
       <span className="text-xl">{icon}</span>
       <span className="font-semibold text-gray-700">{name}</span>
