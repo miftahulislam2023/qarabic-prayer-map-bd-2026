@@ -24,7 +24,7 @@ export async function getPrayerTimes(lat, lng) {
             const timingsHanafi = dataHanafi.data.timings;
 
             // Add 1 minute to Maghrib time
-            const maghribAdjusted = addMinutes(timingsStandard.Maghrib, 1);
+            const maghribAdjusted = addMinutes(timingsStandard.Maghrib, 2);
 
             // Return prayer times
             return {
