@@ -55,7 +55,7 @@ export async function getPrayerTimes(lat, lng) {
 // Calculate Suhur time (10 minutes before Fajr)
 function calculateSuhur(fajrTime) {
     const [hours, minutes] = fajrTime.split(':').map(Number);
-    let suhurMinutes = minutes - 10;
+    let suhurMinutes = minutes - 5;
     let suhurHours = hours;
 
     if (suhurMinutes < 0) {
